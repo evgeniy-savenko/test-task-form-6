@@ -63,7 +63,6 @@
 	watch(
 		formData,
 		() => {
-			console.log(formData.value.parent.name)
 			if (formData.value.parent.name !== '') {
 				isSaveBtnDisabled.value = false
 			}
