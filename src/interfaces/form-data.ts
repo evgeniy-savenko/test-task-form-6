@@ -1,7 +1,7 @@
 export default interface IFormData {
 	parent: {
 		name: string
-		age: string | number
+		age: string
 	}
 	childrens: IChildrens[]
 }
