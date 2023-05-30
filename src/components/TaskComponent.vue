@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { ref } from 'vue'
+	import { ref, watch } from 'vue'
 	import {
 		NInput,
 		NH2,
@@ -12,6 +12,7 @@
 		NH3,
 		NAvatar,
 		NAlert,
+		NFormItem,
 	} from 'naive-ui'
 
 	import type IFormData from '../interfaces/form-data'
@@ -30,6 +31,7 @@
 	const currentTab = ref(tabsNames.form)
 	const isFormDataEmpty = ref(true)
 	const emitationUpload = ref(false)
+	const isSaveBtnDisabled = ref(true)
 
 	function transformOfNum(number: number): string {
 		let words = ['год', 'года', 'лет']
@@ -50,6 +52,24 @@
 	function onClickBackToForm(): void {
 		currentTab.value = tabsNames.form
 	}
+	function onCreate() {
+		return {
+			name: '',
+			age: null,
+		}
+	}
+	const allowOnlyNumber = (value: string) => !value || /^\d+$/.test(value)
+
+	watch(
+		formData,
+		value => {
+			console.log(formData.value.parent.name)
+			if (formData.value.parent.name !== '') {
+				isSaveBtnDisabled.value = false
+			}
+		},
+		{ deep: true }
+	)
 </script>
 
 <template>
@@ -68,16 +88,21 @@
 			</NAlert>
 			<NH2>Введите персональные данные</NH2>
 			<NSpace vertical>
-				<NInput
-					:disabled="emitationUpload"
-					v-model:value="formData.parent.name"
-					placeholder="Имя"
-				/>
-				<NInput
-					:disabled="emitationUpload"
-					v-model:value="formData.parent.age"
-					placeholder="Возраст"
-				/>
+				<NFormItem required label="Имя">
+					<NInput
+						:disabled="emitationUpload"
+						v-model:value="formData.parent.name"
+						placeholder="Введите ваше имя"
+					/>
+				</NFormItem>
+				<NFormItem required label="Возраст">
+					<NInput
+						:disabled="emitationUpload"
+						v-model:value="formData.parent.age"
+						placeholder="Введите ваш возраст"
+						:allow-input="allowOnlyNumber"
+					/>
+				</NFormItem>
 			</NSpace>
 
 			<NH2>Дети (макс. 5)</NH2>
@@ -85,9 +110,7 @@
 				<NDynamicInput
 					:disabled="emitationUpload"
 					v-model:value="formData.childrens"
-					preset="pair"
-					key-placeholder="Имя"
-					value-placeholder="Возраст"
+					:on-create="onCreate"
 					:min="1"
 					:max="5"
 					:createButtonProps="{
@@ -97,10 +120,26 @@
 					}"
 				>
 					<template #create-button-default> Добавить ребенка </template>
+					<template #default="{ value }">
+						<NSpace>
+							<NInput
+								:disabled="emitationUpload"
+								placeholder="Имя"
+								v-model:value="value.name"
+								type="text"
+							/>
+							<NInput
+								:disabled="emitationUpload"
+								:allow-input="allowOnlyNumber"
+								placeholder="Возраст"
+								v-model:value="value.age"
+							/>
+						</NSpace>
+					</template>
 				</NDynamicInput>
 				<NButton
 					:loading="emitationUpload"
-					:disabled="emitationUpload"
+					:disabled="emitationUpload || isSaveBtnDisabled"
 					@click="onClickSaveFormData"
 					type="success"
 					>Сохранить</NButton
@@ -121,9 +160,14 @@
 					:bordered="false"
 					type="success"
 				>
-					{{ child.key }}, {{ child.value }} {{ transformOfNum(+child.value) }}
+					{{ child.name }}, {{ child.age }} {{ transformOfNum(+child.age) }}
 					<template #avatar>
 						<NAvatar
+							size="large"
+							:style="{
+								color: 'green',
+								backgroundColor: 'transparent',
+							}"
 							src="https://cdn-icons-png.flaticon.com/512/3508/3508234.png"
 						/>
 					</template>

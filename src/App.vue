@@ -11,7 +11,7 @@
 			href="https://hh.ru/resume/4db4eb9dff07f87ed30039ed1f7254336b324f"
 			target="_blank"
 		>
-			<img src="./assets/hh.png" class="logo vue" alt="hh" />
+			<img src="./assets/hh.png" class="logo hh" alt="hh" />
 		</a>
 	</div>
 	<TaskComponent />
@@ -25,9 +25,9 @@
 		transition: filter 300ms;
 	}
 	.logo:hover {
-		filter: drop-shadow(0 0 2em #646cffaa);
+		filter: drop-shadow(0 0 2em #c0c0c0e1);
 	}
-	.logo.vue:hover {
-		filter: drop-shadow(0 0 2em #42b883aa);
+	.logo.hh:hover {
+		filter: drop-shadow(0 0 2em #c93131aa);
 	}
 </style>

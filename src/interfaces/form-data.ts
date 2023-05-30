@@ -1,13 +1,13 @@
 export default interface IFormData {
 	parent: {
 		name: string
-		age: string
+		age: string | number
 	}
 	childrens: IChildrens[]
 }
 ;[]
 
 type IChildrens = {
-	key: string
-	value: string
+	name: string
+	age: string | number
 }
